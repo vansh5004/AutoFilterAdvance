@@ -15,6 +15,7 @@ from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_STR
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
+import signal
 
 class Bot(Client):
 
@@ -46,6 +47,12 @@ class Bot(Client):
     async def stop(self, *args):
         await super().stop()
         logging.info("Bot stopped. Bye.")
+        
+        def signal_handler(sig, frame):
+            print("Received SIGTERM. Exiting gracefully.")
+            app.stop()
+            
+        signal.signal(signal.SIGTERM, signal_handler)
     
     async def iter_messages(
         self,
